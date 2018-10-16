@@ -16,7 +16,7 @@ var io = require('socket.io')(server);
 var util = require('util');
 
 // node app.js
-server.listen(8000);
+server.listen(2000);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'app_server', 'views'));
