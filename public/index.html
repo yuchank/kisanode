@@ -20,7 +20,7 @@
     <div id="chatLogs"></div>
   </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="http://127.0.0.1:3000/socket.io/socket.io.js"></script>
+  <script src="http://192.168.0.179:2000/socket.io/socket.io.js"></script>
   <script type="text/javascript">
     $(function() {
       // socket.io 서버에 접속한다.
@@ -48,7 +48,8 @@
         var $msgForm = $('#msgForm');
 
         // 서버로 메시지를 전송한다.
-        socket.emit('chat', { msg: $msgForm.val() });
+        socket.emit('attack', { msg: $msgForm.val() });
+        // socket.emit('chat', { msg: $msgForm.val() });
         $msgForm.val('');
       });
 

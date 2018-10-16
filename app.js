@@ -96,6 +96,21 @@ io.sockets.on('connection', function(socket) {
   //   socket.disconnect();
   // });
 
+  // attack event from browser
+  socket.on('attack', function (data) {
+    console.log(`Message from ${socket.name}: ${data.msg}`);
+    var msg = {
+      from: {
+        name: socket.name,
+        userid: socket.userid      
+      },
+      msg: data.msg
+    };
+
+    sendAttack(data.msg);
+
+  });
+
   socket.on('disconnect', function() {
     clients.pop(socket.id);
     var clientDisconnectedMsg = `User disconnected ${util.inspect(socket.id)}, total: ${clients.length}`;
@@ -107,9 +122,13 @@ function getRandomInRange(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-function sendAttack() {
+function sendAttack(msg) {
   console.log('Attack sent to user');
-  io.sockets.emit('attack', getRandomInRange(0, 360));
+  if (msg) {
+    io.sockets.emit('attack', msg);
+  } else {
+    io.sockets.emit('attack', getRandomInRange(0, 360));
+  }
 }
 
 setInterval(sendAttack, 3000);
