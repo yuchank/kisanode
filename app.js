@@ -111,11 +111,32 @@ io.sockets.on('connection', function(socket) {
 
   });
 
+  socket.on('reset', function (data) {
+    console.log(`reset with ${data}`);
+    io.sockets.emit('reset-ue4', data);
+  });
+  
+  socket.on('attack', function (data) {
+    console.log(`attack with ${data}`);
+    io.sockets.emit('attack-ue4', data);
+  });
+
   socket.on('disconnect', function() {
     clients.pop(socket.id);
     var clientDisconnectedMsg = `User disconnected ${util.inspect(socket.id)}, total: ${clients.length}`;
     console.log(clientDisconnectedMsg);
   });
+
+  socket.on('speed', function(data) {
+    // console.log(data);
+    io.sockets.emit('speed-cs', data);
+  });
+
+  socket.on('gear', function(data) {
+    // console.log(data);
+    io.sockets.emit('gear-cs', data);
+  });
+
 });
 
 function getRandomInRange(min, max) {
@@ -131,4 +152,4 @@ function sendAttack(msg) {
   }
 }
 
-setInterval(sendAttack, 3000);
+// setInterval(sendAttack, 3000);
