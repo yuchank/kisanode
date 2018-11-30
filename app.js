@@ -57,99 +57,68 @@ io.sockets.on('connection', function(socket) {
   clients.push(socket.id);
   var clientConnectedMsg = `User connected ${util.inspect(socket.id)}, total: ${clients.length} `;
   console.log(clientConnectedMsg);
-
-  // // login event 
-  // socket.on('login', function(data) {
-  //   console.log(`Client logged-in:\n name: ${data.name} \n userid: ${data.userid}` );
-
-  //   // socket에 client 정보를 저장
-  //   socket.name = data.name;
-  //   socket.userid = data.userid;
-
-  //   // 접속된 모든 client에게 message를 전송
-  //   io.sockets.emit('login', data.name);
-  // });
-
-  // // chat event
-  // socket.on('chat', function (data) {
-  //   console.log(`Message from ${socket.name}: ${data.msg}`);
-  //   var msg = {
-  //     from: {
-  //       name: socket.name,
-  //       userid: socket.userid      
-  //     },
-  //     msg: data.msg
-  //   };
-
-  //   // message를 전송한 client를 제외한 모든 client에게 message를 전송
-  //   socket.broadcast.emit('chat', msg);
-
-  //   // message를 전송한 client에게만 message를 전송
-  //   // socket.emit('example message 1', { hello: 'world 1' });
   
-  //   // 특정 client에게만 message를 전송. id는 socket 객체의 id 속성값이다. 
-  //   // io.to(socket.id).emit('event_name', {});
-  // });
-
-  // // force client disconnect from server
-  // socket.on('forceDisconnect', function() {
-  //   socket.disconnect();
-  // });
-
-  // attack event from browser
-  socket.on('attack', function (data) {
-    console.log(`Message from ${socket.name}: ${data.msg}`);
-    var msg = {
-      from: {
-        name: socket.name,
-        userid: socket.userid      
-      },
-      msg: data.msg
-    };
-
-    sendAttack(data.msg);
-
-  });
-
-  socket.on('reset', function (data) {
-    console.log(`reset with ${data}`);
-    io.sockets.emit('reset-ue4', data);
-  });
-  
-  socket.on('attack', function (data) {
-    console.log(`attack with ${data}`);
-    io.sockets.emit('attack-ue4', data);
-  });
-
   socket.on('disconnect', function() {
     clients.pop(socket.id);
     var clientDisconnectedMsg = `User disconnected ${util.inspect(socket.id)}, total: ${clients.length}`;
     console.log(clientDisconnectedMsg);
   });
 
+  // attack event
+  socket.on('attack-app', function(data) {
+    console.log('attack-app');
+    io.sockets.emit('attack-app-cs', data);
+  });
+
+  socket.on('attack-obd', function(data) {
+    console.log('attack-obd');
+    io.sockets.emit('attack-obd-cs', data);
+  });
+
+  socket.on('attack-auto', function(data) {
+    console.log('attack-auto');
+    io.sockets.emit('attack-auto-cs', data);
+  });
+  
+  socket.on('attack-usb', function (data) {
+    console.log('attack-usb');
+    io.sockets.emit('check-usb', "check-usb-usb");
+  });
+  
+  socket.on('attack-rans', function (data) {
+    console.log('attack-rans');
+    io.sockets.emit('check-usb', "check-rans-usb");
+  });
+
+  socket.on('usb-status', function (data){
+    if (data === 'usb-on') {
+      console.log('usb in');
+      io.sockets.emit('attack-usb-cs', "attack-usb-cs");
+      io.sockets.emit('usb-status-cs', "on");
+    } 
+    else if (data === 'rans-on') {
+      console.log('usb in');
+      io.sockets.emit('attack-rans-cs', "attack-rans-cs");
+      io.sockets.emit('usb-status-cs', "on");
+    } 
+    else if (data === 'off') {
+      console.log('usb out');
+      io.sockets.emit('usb-status-cs', "off");
+    }
+  })
+
+  socket.on('reset', function (data) {
+    console.log(`reset ${data}`);
+    io.sockets.emit('reset', data);
+  });
+
   socket.on('speed', function(data) {
-    // console.log(data);
     io.sockets.emit('speed-cs', data);
   });
 
-  socket.on('gear', function(data) {
-    // console.log(data);
-    io.sockets.emit('gear-cs', data);
+  socket.on('auto-on', function (data) {
+    console.log('auto-on');
+    io.sockets.emit('auto-on', "auto-on");
   });
-
 });
 
-function getRandomInRange(min, max) {
-  return Math.random() * (max - min) + min;
-}
-
-function sendAttack(msg) {
-  console.log('Attack sent to user');
-  if (msg) {
-    io.sockets.emit('attack', msg);
-  } else {
-    io.sockets.emit('attack', getRandomInRange(0, 360));
-  }
-}
-
-// setInterval(sendAttack, 3000);
