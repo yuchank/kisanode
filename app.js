@@ -122,3 +122,19 @@ io.sockets.on('connection', function(socket) {
   });
 });
 
+function Yellow() {
+  io.sockets.emit('yellow', 'yellow');
+  setTimeout(Red, 4000);
+}
+
+function Green() {
+  io.sockets.emit('green', 'green');
+  setTimeout(Yellow, 15000); 
+}
+
+function Red() {
+  io.sockets.emit('red', 'red');
+  setTimeout(Green, 15000);
+}
+
+Red();
